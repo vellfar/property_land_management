@@ -1,0 +1,60 @@
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.so
+
+# Django
+*.log
+*.pot
+*.pyc
+*.mo
+*.db
+*.sqlite3
+*.pyo
+*.pyd
+__pycache__/
+local_settings.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+
+# Migrations
+*/migrations/*
+
+# Static and media files
+staticfiles/
+media/
+
+# Coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+Pipfile
+Pipfile.lock
+pyvenv.cfg
+
+# Folders
+__pycache__/
+node_modules/
+Lib/
+Scripts/
