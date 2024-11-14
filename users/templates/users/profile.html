@@ -1,0 +1,62 @@
+{% extends "templates/index.html" %} {% block content %}
+<div class="main-content">
+    <div class="header">
+        <h2>User Profile</h2>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body text-center">
+                    <img
+                        src="data:image/png;base64,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"
+                        alt="User Avatar"
+                        class="rounded-circle"
+                        width="250"
+                    />
+                    <h3 class="mt-3">{{ first_name }} {{ last_name }}</h3>
+                    <p class="text-muted">{{ email }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Personal Information</h4>
+                    <div class="row mb-3">
+                        <div class="col-sm-4"><strong>Username:</strong></div>
+                        <div class="col-sm-8">{{ username }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4"><strong>First Name:</strong></div>
+                        <div class="col-sm-8">{{ first_name }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4"><strong>Last Name:</strong></div>
+                        <div class="col-sm-8">{{ last_name }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4"><strong>Email:</strong></div>
+                        <div class="col-sm-8">{{ email }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4"><strong>Role:</strong></div>
+                        <div class="col-sm-8">
+                            {% if role == 1 %} Admin {% elif role == 2 %}
+                            Government Official {% else %} Landowner {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% comment %} <div class="text-right mt-4">
+                <a href="{% url 'edit_profile' %}" class="btn btn-primary"
+                    >Edit Profile</a
+                >
+                <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+            </div> {% endcomment %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -6,8 +6,7 @@ from django.contrib.auth import logout
 import io
 import urllib, base64
 import matplotlib.pyplot as plt
-
-
+from django.http import HttpResponse
 
 @login_required(login_url='login')
 def index(request):
@@ -33,7 +32,7 @@ def index(request):
     buffer.close()
 
     # Pass the base64 string to the template
-    return render(request, 'index.html', {'chart': image_base64})
+    return render(request, 'users/home.html', {'chart': image_base64})
 
 def register(request):
     if request.method == 'POST':
@@ -46,7 +45,7 @@ def register(request):
             return redirect('dashboard')
     else:
         form = UserCreationForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'users/register.html', {'form': form})
 
 def user_login(request):
     if request.method == 'POST':
@@ -56,14 +55,35 @@ def user_login(request):
         if user is not None:
             login(request, user)
             return redirect('dashboard')
-    return render(request, 'login.html')
+    return render(request, 'users/login.html')
 
 def user_logout(request):
     logout(request)
+    request.session.flush()
     return redirect('login')
 
 def profile(request):
-    return render(request, 'profile.html')
+    return render(request, 'users/profile.html')
 
 def settings(request):
-    return render(request, 'settings.html')
+    return render(request, 'users/settings.html')
+
+def updateAccount(request):
+    if request.method == 'POST':
+        user = request.user
+        user.first_name = request.POST['first_name']
+        user.last_name = request.POST['last_name']
+        user.email = request.POST['email']
+        user.save()
+        return redirect('profile')
+    else:
+        return HttpResponse('Invalid request method')
+                            
+def updatePassword(request):
+    if request.method == 'POST':
+        user = request.user
+        user.set_password(request.POST['password'])
+        user.save()
+        return redirect('profile')
+    else:
+        return HttpResponse('Invalid request method')
