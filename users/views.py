@@ -31,11 +31,11 @@ def index(request):
     property_values = properties.values_list('valuation', flat=True)
 
     fig1, ax1 = plt.subplots(figsize=(8, 6))
-    ax1.bar(property_names, property_values, color=(54/255, 162/255, 235/255, 0.6) )
+    ax1.bar(property_names, property_values, color=(54/255, 162/255, 235/255, 0.6))
     ax1.set_xlabel('Property Names')
     ax1.set_ylabel('Valuation (Millions)')
     ax1.set_title('Property Value by Name')
-    ax1.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x/1e6)) + 'M'))
+    ax1.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x/1e6)) + 'M'))  # Formatting to show in millions
     ax1.tick_params(axis='x', rotation=45)
     
     # Save chart to PNG
@@ -54,12 +54,25 @@ def index(request):
     months = [str(month['request_date__month']) for month in transfer_counts]
     counts = [month['count'] for month in transfer_counts]
 
+    # Ensure all 12 months are represented on the x-axis
+    all_months = [str(i) for i in range(1, 13)]  # Months 1 to 12
+    all_counts = [0] * 12  # Default counts set to 0 for all months
+
+    for month in transfer_counts:
+        month_idx = month['request_date__month'] - 1  # Convert month to 0-indexed
+        all_counts[month_idx] = month['count']
+
     fig2, ax2 = plt.subplots(figsize=(8, 6))
-    ax2.plot(months, counts, marker='o', color=(75/255, 192/255, 192/255, 0.6) )
+    ax2.plot(all_months, all_counts, marker='o', color=(75/255, 192/255, 192/255, 0.6))
     ax2.set_xlabel('Month')
     ax2.set_ylabel('Number of Transfers')
     ax2.set_title('Transfers per Month')
-    ax2.xaxis.set_major_locator(MaxNLocator(integer=True))
+    ax2.xaxis.set_major_locator(MaxNLocator(integer=True))  # Ensure integer values for x-axis
+    ax2.set_xticks(all_months)  # Set x-ticks to represent all 12 months
+    ax2.set_xticklabels([
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ])  # Month labels
     
     # Save chart to PNG
     buffer2 = BytesIO()
