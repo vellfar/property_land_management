@@ -1,0 +1,52 @@
+{% extends "templates/index.html" %}
+{% block content %}
+    <div class="main-content">
+        <div class="header">
+            <h2>Properties Overview</h2>
+            <button
+                class="btn btn-primary"
+                onclick="this.innerText='Loading...'; location.reload();"
+            >
+                Refresh
+            </button>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Properties</li>
+            </ol>
+        </nav>
+        <!-- Properties Table -->
+         <div class="card bg-white shadow-lg">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Property Name</th>
+                        <th scope="col">Location</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>Property 1</td>
+                        <td>Location 1</td>
+                        <td>$100,000</td>
+                        <td>Available</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">2</th>
+                        <td>Property 2</td>
+                        <td>Location 2</td>
+                        <td>$150,000</td>
+                        <td>Sold</td>
+                    </tr>
+                    <!-- Add more rows as needed -->
+                </tbody>
+            </table>
+         </div>
+    
+        
+{% endblock %}

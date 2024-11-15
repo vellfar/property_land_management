@@ -1,0 +1,126 @@
+{% extends "templates/index.html" %} {% block content %}
+<div class="main-content">
+    <div class="header">
+        <h2>Dashboard Overview</h2>
+        <button
+            class="btn btn-primary"
+            onclick="this.innerText='Loading...'; location.reload();"
+        >
+            Refresh
+        </button>
+    </div>
+
+    <!-- Dashboard Cards -->
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Land Properties</h5>
+                    <p class="card-text">1,024</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Active Transfers</h5>
+                    <p class="card-text">$12,345</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-dark mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Property Value</h5>
+                    <p class="card-text">145</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Graph or Data Table -->
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Property Value</h4>
+            <img
+                src="data:image/png;base64,{{ chart }}"
+                alt="Plot Image"
+                style="width: 100%; height: auto"
+            />
+        </div>
+        <div class="col-md-6">
+            <h4>Transfer Rate</h4>
+            <img
+                src="data:image/png;base64,{{ chart }}"
+                alt="Plot Image"
+                style="width: 100%; height: auto"
+            />
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var ctx1 = document.getElementById("propertiesChart").getContext("2d");
+        var propertiesChart = new Chart(ctx1, {
+            type: "bar",
+            data: {
+                labels: [
+                    "January",
+                    "February",
+                    "March",
+                    "April",
+                    "May",
+                    "June",
+                ],
+                datasets: [
+                    {
+                        label: "Properties",
+                        data: [12, 19, 3, 5, 2, 3],
+                        backgroundColor: "rgba(54, 162, 235, 0.2)",
+                        borderColor: "rgba(54, 162, 235, 1)",
+                        borderWidth: 1,
+                    },
+                ],
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                    },
+                },
+            },
+        });
+
+        var ctx2 = document.getElementById("transfersChart").getContext("2d");
+        var transfersChart = new Chart(ctx2, {
+            type: "line",
+            data: {
+                labels: [
+                    "January",
+                    "February",
+                    "March",
+                    "April",
+                    "May",
+                    "June",
+                ],
+                datasets: [
+                    {
+                        label: "Transfers",
+                        data: [15, 10, 5, 2, 20, 30],
+                        backgroundColor: "rgba(75, 192, 192, 0.2)",
+                        borderColor: "rgba(75, 192, 192, 1)",
+                        borderWidth: 1,
+                    },
+                ],
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                    },
+                },
+            },
+        });
+    </script>
+</div>
+{% endblock %}
