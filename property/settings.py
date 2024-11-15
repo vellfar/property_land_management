@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     # Custom apps
     'users',
     'properties',
-    'permissions',
     'audits'
 ]
 
