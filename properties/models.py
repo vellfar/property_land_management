@@ -55,4 +55,4 @@ class OwnershipTransfer(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Transfer {self.transfer_id} - {self.status}"
+        return f"Transfer {self.property_id} - {self.status}"
