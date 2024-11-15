@@ -1,43 +1,80 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
+from django.db.models import Count, Sum
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-import io
+from io import BytesIO
+from matplotlib.ticker import MaxNLocator
+from properties.models import *
 import urllib, base64
 import matplotlib.pyplot as plt
 from django.http import HttpResponse
 
-# @login_required(login_url='login')
+@login_required
 def index(request):
-    if request.user.is_authenticated:
-        # return redirect('dashboard')
-        # Example data for the plot
-        # user_id = request.user.id
-        # LandProperty.objects.filter(owner=user_id)
-        x = [1, 2, 3, 4, 5]
-        y = [10, 20, 25, 30, 35]
+    # 1. Get the number of properties owned by the user
+    properties = LandProperty.objects.filter(owner=request.user)
+    number_of_properties = properties.count()
 
-        # Create the plot
-        plt.figure(figsize=(6, 4))
-        plt.plot(x, y, marker='o')
-        plt.title('Sample Plot')
-        plt.xlabel('X Axis')
-        plt.ylabel('Y Axis')
+    # 2. Get the number of active transfers involving the user
+    active_transfers = OwnershipTransfer.objects.filter(
+        models.Q(current_owner=request.user) | models.Q(new_owner=request.user)
+    ).count()
 
-        # Save the plot to a memory buffer
-        buffer = io.BytesIO()
-        plt.savefig(buffer, format='png')
-        buffer.seek(0)
+    # 3. Calculate the total value of the user's properties (sum of valuations)
+    total_property_value = properties.aggregate(total_value=Sum('valuation'))['total_value'] or 0
 
-        # Encode the plot as base64
-        image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
-        buffer.close()
+    # 4. Prepare data for the charts
+    # Chart 1: Property value by name (Bar chart)
+    property_names = properties.values_list('name', flat=True)
+    property_values = properties.values_list('valuation', flat=True)
 
-        # Pass the base64 string to the template
-        return render(request, 'users/home.html', {'chart': image_base64})
-    else:
-        return render(request, 'templates/landing.html')
+    fig1, ax1 = plt.subplots(figsize=(8, 6))
+    ax1.bar(property_names, property_values, color=(54/255, 162/255, 235/255, 0.6) )
+    ax1.set_xlabel('Property Names')
+    ax1.set_ylabel('Valuation (Millions)')
+    ax1.set_title('Property Value by Name')
+    ax1.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x/1e6)) + 'M'))
+    ax1.tick_params(axis='x', rotation=45)
+    
+    # Save chart to PNG
+    buffer1 = BytesIO()
+    plt.savefig(buffer1, format='png')
+    buffer1.seek(0)
+    chart1 = base64.b64encode(buffer1.getvalue()).decode()
+
+    # Chart 2: Transfer count over months (Line chart)
+    transfers = OwnershipTransfer.objects.filter(
+        models.Q(current_owner=request.user) | models.Q(new_owner=request.user)
+    )
+    
+    # Group by month (using request_date)
+    transfer_counts = transfers.values('request_date__month').annotate(count=Count('id')).order_by('request_date__month')
+    months = [str(month['request_date__month']) for month in transfer_counts]
+    counts = [month['count'] for month in transfer_counts]
+
+    fig2, ax2 = plt.subplots(figsize=(8, 6))
+    ax2.plot(months, counts, marker='o', color=(75/255, 192/255, 192/255, 0.6) )
+    ax2.set_xlabel('Month')
+    ax2.set_ylabel('Number of Transfers')
+    ax2.set_title('Transfers per Month')
+    ax2.xaxis.set_major_locator(MaxNLocator(integer=True))
+    
+    # Save chart to PNG
+    buffer2 = BytesIO()
+    plt.savefig(buffer2, format='png')
+    buffer2.seek(0)
+    chart2 = base64.b64encode(buffer2.getvalue()).decode()
+
+    return render(request, 'users/home.html', {
+        'number_of_properties': number_of_properties,
+        'active_transfers': active_transfers,
+        'total_property_value': total_property_value,
+        'chart1': chart1,
+        'chart2': chart2
+    })
+
 
 def register(request):
     if request.method == 'POST':
