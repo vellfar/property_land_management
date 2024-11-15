@@ -31,13 +31,27 @@ def index(request):
     property_values = properties.values_list('valuation', flat=True)
 
     fig1, ax1 = plt.subplots(figsize=(8, 6))
-    ax1.bar(property_names, property_values, color=(54/255, 162/255, 235/255, 0.6))
+    bars = ax1.bar(property_names, property_values, color=(54/255, 162/255, 235/255, 0.6))
+
+    # Set labels and title
     ax1.set_xlabel('Property Names')
     ax1.set_ylabel('Valuation (Millions)')
     ax1.set_title('Property Value by Name')
-    ax1.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x/1e6)) + 'M'))  # Formatting to show in millions
+
+    # Format y-axis to show values in millions with 4 decimal places for smaller values
+    ax1.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, loc: 
+        "{:,.4f}M".format(x / 1e6) if x < 1e6 else "{:,.0f}M".format(x / 1e6)))
+
+    # Set the y-axis limits based on the maximum valuation
+    max_valuation = float(max(property_values)) if property_values else 0  # Convert to float if Decimal
+    ax1.set_ylim(0, max_valuation * 1.1)  # Add 10% margin for better visualization
+
+    # Add gridlines for clarity
+    ax1.grid(axis='y', linestyle='--', alpha=0.7)
+
+    # Rotate the x-axis labels for better readability
     ax1.tick_params(axis='x', rotation=45)
-    
+
     # Save chart to PNG
     buffer1 = BytesIO()
     plt.savefig(buffer1, format='png')
@@ -69,7 +83,7 @@ def index(request):
     ax2.set_title('Transfers per Month')
     ax2.xaxis.set_major_locator(MaxNLocator(integer=True))  # Ensure integer values for x-axis
     ax2.set_xticks(all_months)  # Set x-ticks to represent all 12 months
-    ax2.set_xticklabels([
+    ax2.set_xticklabels([ 
         'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
     ])  # Month labels
@@ -87,7 +101,6 @@ def index(request):
         'chart1': chart1,
         'chart2': chart2
     })
-
 
 def register(request):
     if request.method == 'POST':
@@ -133,7 +146,7 @@ def updateAccount(request):
         return redirect('profile')
     else:
         return HttpResponse('Invalid request method')
-                            
+
 def updatePassword(request):
     if request.method == 'POST':
         user = request.user
