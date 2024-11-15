@@ -40,7 +40,7 @@ class LandProperty(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.property_id} - {self.location}"
+        return f"{self.name} - {self.location}"
 
 
 class OwnershipTransfer(models.Model):
