@@ -4,6 +4,7 @@ from django.db import models
 
 class User(AbstractUser):
     role = models.IntegerField(default=3)  # 1 = Admin, 2 = Government Official, 3 = Landowner
+    nin = models.CharField(max_length=15, blank=True, null=True)
 
     def __str__(self):
         return f"{self.username}"

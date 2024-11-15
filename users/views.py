@@ -13,6 +13,8 @@ def index(request):
     if request.user.is_authenticated:
         # return redirect('dashboard')
         # Example data for the plot
+        # user_id = request.user.id
+        # LandProperty.objects.filter(owner=user_id)
         x = [1, 2, 3, 4, 5]
         y = [10, 20, 25, 30, 35]
 

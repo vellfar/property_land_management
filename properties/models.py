@@ -12,13 +12,29 @@ class Document(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+class Location(models.Model):
+    village = models.CharField(max_length=255)
+    parish = models.CharField(max_length=255)
+    sub_county = models.CharField(max_length=255)
+    county = models.CharField(max_length=255)
+    district = models.CharField(max_length=255)
+    country = models.CharField(max_length=255)
+    status = models.IntegerField(default=1) # 0 Deleted, 1 Active
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.location}"
+
 class LandProperty(models.Model):  
+    name = models.CharField(max_length=255)
+    PID = models.CharField(max_length=255, null=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='properties')
-    location = models.CharField(max_length=255)
-    size = models.DecimalField(max_digits=10, decimal_places=2)
+    location = models.OneToOneField(Location, on_delete=models.SET_NULL, null=True)
+    size = models.DecimalField(max_digits=10, decimal_places=2) # Area In Acres
     valuation = models.DecimalField(max_digits=15, decimal_places=2)
     land_map = models.ForeignKey(Document, on_delete=models.SET_NULL, null=True)
-    status = models.IntegerField(default=1) # 0 Inactive, 1 Available, 2 Under Transfer
+    status = models.IntegerField(default=1) # 0 Deleted, 1 Available, 2 Under Transfer
     added_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='added_properties')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
