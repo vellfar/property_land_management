@@ -8,31 +8,34 @@ import urllib, base64
 import matplotlib.pyplot as plt
 from django.http import HttpResponse
 
-@login_required(login_url='login')
+# @login_required(login_url='login')
 def index(request):
+    if request.user.is_authenticated:
+        # return redirect('dashboard')
+        # Example data for the plot
+        x = [1, 2, 3, 4, 5]
+        y = [10, 20, 25, 30, 35]
 
-    # Example data for the plot
-    x = [1, 2, 3, 4, 5]
-    y = [10, 20, 25, 30, 35]
+        # Create the plot
+        plt.figure(figsize=(6, 4))
+        plt.plot(x, y, marker='o')
+        plt.title('Sample Plot')
+        plt.xlabel('X Axis')
+        plt.ylabel('Y Axis')
 
-    # Create the plot
-    plt.figure(figsize=(6, 4))
-    plt.plot(x, y, marker='o')
-    plt.title('Sample Plot')
-    plt.xlabel('X Axis')
-    plt.ylabel('Y Axis')
+        # Save the plot to a memory buffer
+        buffer = io.BytesIO()
+        plt.savefig(buffer, format='png')
+        buffer.seek(0)
 
-    # Save the plot to a memory buffer
-    buffer = io.BytesIO()
-    plt.savefig(buffer, format='png')
-    buffer.seek(0)
-    
-    # Encode the plot as base64
-    image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
-    buffer.close()
+        # Encode the plot as base64
+        image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+        buffer.close()
 
-    # Pass the base64 string to the template
-    return render(request, 'users/home.html', {'chart': image_base64})
+        # Pass the base64 string to the template
+        return render(request, 'users/home.html', {'chart': image_base64})
+    else:
+        return render(request, 'templates/landing.html')
 
 def register(request):
     if request.method == 'POST':
