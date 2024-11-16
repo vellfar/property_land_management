@@ -27,7 +27,7 @@ class LandPropertyAdmin(admin.ModelAdmin):
 
 @admin.register(OwnershipTransfer)
 class OwnershipTransferAdmin(admin.ModelAdmin):
-    list_display = ('id', 'property_id', 'current_owner', 'new_owner', 'request_date', 'status', 'added_by', 'created_at', 'updated_at')
+    list_display = ('id', 'land_property', 'current_owner', 'new_owner', 'request_date', 'status', 'added_by', 'created_at', 'updated_at')
     list_filter = ('status', 'request_date', 'created_at')
     search_fields = ('property_id__name', 'current_owner__username', 'new_owner__username', 'added_by__username')
     ordering = ('-request_date',)
