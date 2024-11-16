@@ -29,24 +29,34 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {% for property in properties %}
                     <tr>
-                        <th scope="row">1</th>
-                        <td>Property 1</td>
-                        <td>Location 1</td>
-                        <td>$100,000</td>
-                        <td>Available</td>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ property.name }}</td>
+                        <td>{{ property.location }}</td>
+                        <td>${{ property.price }}</td>
+                        <td>{{ property.status }}</td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="actionDropdown{{ forloop.counter }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Actions
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="actionDropdown{{ forloop.counter }}">
+                                    <li><a class="dropdown-item" href="#">Edit</a></li>
+                                    <li><a class="dropdown-item" href="#">Delete</a></li>
+                                    <li><a class="dropdown-item" href="#">View</a></li>
+                                </ul>
+                            </div>
+                            
+                        </td>
                     </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Property 2</td>
-                        <td>Location 2</td>
-                        <td>$150,000</td>
-                        <td>Sold</td>
-                    </tr>
-                    <!-- Add more rows as needed -->
-                </tbody>
-            </table>
-         </div>
-    
-        
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">No properties available.</td>
+                        </tr>
+                    {% endfor %}
+            </tbody>
+        </table>
+     </div>
+
 {% endblock %}

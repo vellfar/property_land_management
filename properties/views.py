@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from properties.models import OwnershipTransfer
-
+from .models import *
 # Create your views here.
 def index(request):
-    return render(request, 'properties/index.html')
+    properties = LandProperty.objects.all()
+    return render(request, 'properties/index.html',{'properties': properties})
 
 def transfers(request):
     user_id = request.user.id

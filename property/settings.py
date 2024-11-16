@@ -78,25 +78,25 @@ WSGI_APPLICATION = 'property.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'property',
-        'USER': 'root',
-        'PASSWORD': 'Trev0rMcD@niel',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'property',
+#         'USER': 'root',
+#         'PASSWORD': 'Trev0rMcD@niel',
+#         'HOST': 'localhost',
+#         'PORT': '3306',
+#     }
+# }
 
 
 AUTH_USER_MODEL = 'users.User'  # Replace 'users' with the actual app name if different
