@@ -8,6 +8,7 @@ from io import BytesIO
 from matplotlib.ticker import MaxNLocator
 from properties.models import *
 import urllib, base64
+from .forms import UserRegistrationForm
 from django.contrib.auth import update_session_auth_hash
 import matplotlib.pyplot as plt
 from django.contrib import messages
@@ -109,16 +110,17 @@ def index(request):
 
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.role = request.POST['role']  # Assign role based on form input
-            user.save()
-            login(request, user)
-            return redirect('dashboard')
+            user = form.save()  # Save the user
+            login(request, user)  # Log in the new user
+            messages.success(request, "Registration successful. Welcome!")
+            return redirect('dashboard')  # Replace 'home' with your desired redirect URL
     else:
-        form = UserCreationForm()
+        form = UserRegistrationForm()
+
     return render(request, 'users/register.html', {'form': form})
+
 
 def user_login(request):
     if request.method == 'POST':
