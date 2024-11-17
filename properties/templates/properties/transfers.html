@@ -19,7 +19,6 @@
     </nav>
 
     <!-- Transfers Table -->
-     {{transfers}}
     <div class="card bg-white shadow-lg">
         <table class="table table-striped">
             <thead>
@@ -36,15 +35,25 @@
                 {% for transfer in transfers %}
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ transfer.property }}</td>
-                    <td>{{ transfer.from }}</td>
-                    <td>{{ transfer.to }}</td>
-                    <td>{{ transfer.date }}</td>
-                    <td>{{ transfer.status }}</td>
+                    <td>{{ transfer.land_property.name }}</td>
+                    <td>{{ transfer.current_owner.username }}</td>
+                    <td>{{ transfer.new_owner.username }}</td>
+                    <td>{{ transfer.request_date }}</td>
+                    <td>
+                        {% if transfer.status == 1 %}
+                            <span class="badge bg-warning">Pending</span>
+                        {% elif transfer.status == 2 %}
+                            <span class="badge bg-success">Successful</span>
+                        {% else %}
+                            <span class="badge bg-danger">Unknown</span>
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+
+</div>
 
 {% endblock %}
