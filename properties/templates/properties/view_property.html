@@ -4,12 +4,80 @@
         <h2>Property Details</h2>
         <table class="table">
             <tr><th>Name:</th><td>{{ property.name }}</td></tr>
-            <tr><th>Location:</th><td>{{ property.location }}</td></tr>
             <tr><th>Size (Acres):</th><td>{{ property.size }}</td></tr>
             <tr><th>Valuation (UGX):</th><td>{{ property.valuation }}</td></tr>
-            <tr><th>Status:</th><td>{{ property.status }}</td></tr>
+            <tr><th>Status:</th>
+                <td>
+                    {% if property.status == 1 %}
+                        Available
+                    {% elif property.status == 2 %}
+                        Under Transfer
+                    {% else %}
+                        Unknown Status
+                    {% endif %}
+                </td>
+            </tr>
             <tr><th>Created At:</th><td>{{ property.created_at }}</td></tr>
             <tr><th>Updated At:</th><td>{{ property.updated_at }}</td></tr>
+        </table>
+
+        <!-- Separate Table for Location -->
+        <h3>Location</h3>
+        <table class="table">
+            <tr><th>Village:</th>
+                <td>
+                    {% if property.location %}
+                        {{ property.location.village }}
+                    {% else %}
+                        Not available
+                    {% endif %}
+                </td>
+            </tr>
+            <tr><th>Parish:</th>
+                <td>
+                    {% if property.location %}
+                        {{ property.location.parish }}
+                    {% else %}
+                        Not available
+                    {% endif %}
+                </td>
+            </tr>
+            <tr><th>Sub County:</th>
+                <td>
+                    {% if property.location %}
+                        {{ property.location.sub_county }}
+                    {% else %}
+                        Not available
+                    {% endif %}
+                </td>
+            </tr>
+            <tr><th>County:</th>
+                <td>
+                    {% if property.location %}
+                        {{ property.location.county }}
+                    {% else %}
+                        Not available
+                    {% endif %}
+                </td>
+            </tr>
+            <tr><th>District:</th>
+                <td>
+                    {% if property.location %}
+                        {{ property.location.district }}
+                    {% else %}
+                        Not available
+                    {% endif %}
+                </td>
+            </tr>
+            <tr><th>Country:</th>
+                <td>
+                    {% if property.location %}
+                        {{ property.location.country }}
+                    {% else %}
+                        Not available
+                    {% endif %}
+                </td>
+            </tr>
         </table>
     </div>
 {% endblock %}
