@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.shortcuts import render
 from properties.models import OwnershipTransfer
 from .models import *
-from .forms import LandPropertyForm
+from .forms import LandPropertyForm, PropertyForm, LocationForm
 from django.http import HttpResponseForbidden
 
 # Create your views here.
@@ -18,6 +18,35 @@ def index(request):
     return render(request, 'properties/index.html', context)
 
 
+def add_property(request):
+    if request.method == "POST":
+        # Initialize the form with POST data
+        property_form = PropertyForm(request.POST)
+        location_form = LocationForm(request.POST)
+
+        if property_form.is_valid() and location_form.is_valid():
+            # Save location data first
+            location = location_form.save()
+
+            # Save property data with the location
+            property = property_form.save(commit=False)
+            property.location = location
+            property.owner = request.user  # Set the owner to the logged-in user
+            property.added_by = request.user  # Set the user adding the property
+            property.save()
+
+            # Redirect to a success page or the owner's dashboard
+            return redirect('dashboard')  # Replace 'dashboard' with your actual URL name
+
+    else:
+        property_form = PropertyForm()
+        location_form = LocationForm()
+
+    return render(request, 'properties/add_property.html', {
+        'property_form': property_form,
+        'location_form': location_form
+    })
+
 def transfers(request):
     user = request.user
     # Retrieve transfers where the user is the current owner or the new owner
@@ -30,6 +59,7 @@ def transfers(request):
         'transfers': property_transfers
     }
     return render(request, 'properties/transfers.html', context)
+
 
 
 
