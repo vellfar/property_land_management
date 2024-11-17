@@ -130,6 +130,8 @@ def user_login(request):
         if user is not None:
             login(request, user)
             return redirect('dashboard')
+        else:
+            return render(request, 'users/login.html', {'login_error': 'Wrong Credentials'})
     return render(request, 'users/login.html')
 
 def user_logout(request):
