@@ -51,10 +51,11 @@
                                 Actions
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="actionDropdown{{ forloop.counter }}">
-                                <li><a class="dropdown-item" href="#">Edit</a></li>
-                                <li><a class="dropdown-item" href="#">Delete</a></li>
-                                <li><a class="dropdown-item" href="#">View</a></li>
+                                <li><a class="dropdown-item" href="{% url 'edit_property' property.id %}">Edit</a></li>
+                                <li><a class="dropdown-item" href="{% url 'confirm_delete_property' property.id %}">Delete</a></li>
+                                <li><a class="dropdown-item" href="{% url 'view_property' property.id %}">View</a></li>
                             </ul>
+                            
                         </div>
                     </td>
                 </tr>

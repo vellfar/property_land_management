@@ -1,0 +1,15 @@
+{% extends "templates/index.html" %}
+{% block content %}
+    <div class="main-content">
+        <h2>Property Details</h2>
+        <table class="table">
+            <tr><th>Name:</th><td>{{ property.name }}</td></tr>
+            <tr><th>Location:</th><td>{{ property.location }}</td></tr>
+            <tr><th>Size (Acres):</th><td>{{ property.size }}</td></tr>
+            <tr><th>Valuation (UGX):</th><td>{{ property.valuation }}</td></tr>
+            <tr><th>Status:</th><td>{{ property.status }}</td></tr>
+            <tr><th>Created At:</th><td>{{ property.created_at }}</td></tr>
+            <tr><th>Updated At:</th><td>{{ property.updated_at }}</td></tr>
+        </table>
+    </div>
+{% endblock %}
