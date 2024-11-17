@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponse
 from django.shortcuts import render
 from properties.models import OwnershipTransfer
 from .models import *
@@ -160,3 +161,15 @@ def initiate_transfer(request):
         'users': users,
         'properties': properties,
     })
+
+def confirm_transfer(request):
+    if request.method == 'POST':
+        transfer_id = request.POST.get('transfer_id')
+        print(transfer_id)
+        transfer = OwnershipTransfer.objects.filter(id=transfer_id).first()
+        transfer.status = 2
+        transfer.save()
+        return redirect('transfers')
+    else:
+        return HttpResponse('Bad Request')
+

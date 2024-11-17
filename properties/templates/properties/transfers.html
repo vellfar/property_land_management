@@ -60,7 +60,16 @@
                     </td>
                     <td>
                         {% if transfer.status == 1 %}
-                        <button class="btn btn-sm btn-success">Confirm</button>
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-success"
+                            data-bs-toggle="modal"
+                            data-bs-target="#exampleModal"
+                            data-id="{{ transfer.id }}"
+                            onclick="setPropertyId(this)"
+                        >
+                            Confirm
+                        </button>
                         {% elif transfer.status == 2 %}
                         <button disabled class="btn btn-sm btn-secondary">
                             Confirmed
@@ -75,5 +84,62 @@
         </table>
     </div>
 </div>
+
+<div
+    class="modal fade"
+    id="exampleModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">
+                    Confirm Property Transfer
+                </h1>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to transfer your property?
+                <form method="post" action="{% url 'confirm-transfer' %}">
+                    {% csrf_token %}
+                    <input
+                        id="transfer-id"
+                        type="text"
+                        class="d-none"
+                        name="transfer_id"
+                    />
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            class="btn btn-danger"
+                            data-bs-dismiss="modal"
+                        >
+                            Close
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            Yes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let selectedPropertyId = null;
+
+    function setPropertyId(button) {
+        selectedPropertyId = button.getAttribute("data-id");
+        document.getElementById("transfer-id").value = selectedPropertyId;
+    }
+</script>
 
 {% endblock %}
