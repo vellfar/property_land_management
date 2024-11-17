@@ -3,8 +3,16 @@ from properties.models import OwnershipTransfer
 from .models import *
 # Create your views here.
 def index(request):
-    properties = LandProperty.objects.all()
-    return render(request, 'properties/index.html',{'properties': properties})
+    # Get properties where the logged-in user is the owner
+    properties = LandProperty.objects.filter(owner=request.user)
+    
+    # Prepare context to send to the template
+    context = {
+        'properties': properties
+    }
+
+    return render(request, 'properties/index.html', context)
+
 
 def transfers(request):
     user = request.user

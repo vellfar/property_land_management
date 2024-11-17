@@ -1,0 +1,56 @@
+{% extends "templates/index.html" %}
+
+{% block content %}
+<div class="main-content">
+    <div class="header">
+        <h2>Dashboard Overview</h2>
+        <button class="btn btn-primary" onclick="this.innerText='Loading...'; location.reload();">Refresh</button>
+    </div>
+
+    <!-- Dashboard Cards -->
+    <div class="row">
+        <div class="col-md-4">
+            <a href="{% url 'properties' %}">
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Land Properties</h5>
+                        <p class="card-text">{{ number_of_properties }}</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="{% url 'transfers' %}">
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Active Transfers</h5>
+                        <p class="card-text">{{ active_transfers }}</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-dark mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Property Value</h5>
+                    <p class="card-text">{{ total_property_value|floatformat:2 }} Million</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Graphs -->
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Property Value</h4>
+            <img src="data:image/png;base64,{{ chart1 }}" alt="Property Value Chart" style="width: 100%; height: auto" />
+        </div>
+        <div class="col-md-6">
+            <h4>Transfer Rate</h4>
+            <img src="data:image/png;base64,{{ chart2 }}" alt="Transfer Rate Chart" style="width: 100%; height: auto" />
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</div>
+{% endblock %}
