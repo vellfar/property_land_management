@@ -110,68 +110,53 @@ def confirm_delete_property(request, property_id):
 
 
 def initiate_transfer(request):
+    users = User.objects.none()
+    properties = LandProperty.objects.filter(owner=request.user)
+
     if request.method == "POST":
-        print(request.POST)
-        # Get selected new owner and property
-        new_owner_id = request.POST.get('new_owner')  # ID of new owner selected
-        property_id = request.POST.get('property')  # ID of selected property
-
-        # Handle missing inputs
-        if not new_owner_id or not property_id:
-            messages.error(request, "Please select both a new owner and a property.")
-            return redirect('initiate_transfer')
-
-        try:
-            # Fetch selected user and property
-            new_owner = User.objects.get(id=new_owner_id)
-            property_to_transfer = LandProperty.objects.get(id=property_id)
-
-            # Create the OwnershipTransfer record
-            OwnershipTransfer.objects.create(
-                land_property=property_to_transfer,
-                current_owner=request.user,
-                new_owner=new_owner,
-                status=1,  # Pending status
-                added_by=request.user
-            )
-
-            # Provide success message
-            messages.success(request, "Transfer initiated successfully.")
-            return redirect('transfers')  # Redirect to transfers page
-        
-        except User.DoesNotExist:
-            messages.error(request, "Selected user does not exist.")
-        except LandProperty.DoesNotExist:
-            messages.error(request, "Selected property does not exist.")
-        except Exception as e:
-            messages.error(request, f"An error occurred: {str(e)}")
-        
-        # Redirect back to the form in case of an error
-        return redirect('initiate_transfer')
-
-    else:
-        # Handle search functionality for both user (new owner) and properties
-
-        # Search for new owner based on request input
-        if 'search_user' in request.GET:
-            query = request.GET.get('search_user')
+        # Handle searches
+        if 'search_users' in request.POST:
+            query = request.POST.get('search_user', '')
             users = User.objects.filter(
-                Q(username__icontains=query) | Q(first_name__icontains=query) | Q(last_name__icontains=query) | Q(email__icontains=query)
+                Q(username__icontains=query) |
+                Q(first_name__icontains=query) |
+                Q(last_name__icontains=query) |
+                Q(email__icontains=query)
             )
-        else:
-            users = User.objects.none()  # Empty query result if no search term
+        
+        if 'search_properties' in request.POST:
+            query = request.POST.get('search_property', '')
+            properties = LandProperty.objects.filter(owner=request.user, name__icontains=query)
 
-        # Get properties where the logged-in user is the owner
-        if 'search_property' in request.GET:
-            property_query = request.GET.get('search_property')
-            properties = LandProperty.objects.filter(owner=request.user, name__icontains=property_query)
-        else:
-            properties = LandProperty.objects.filter(owner=request.user)
+        # Handle transfer creation
+        new_owner_id = request.POST.get('new_owner')
+        property_id = request.POST.get('property')
 
-        # Prepare context for the template
-        context = {
-            'users': users,
-            'properties': properties,
-        }
+        if new_owner_id and property_id:
+            try:
+                new_owner = User.objects.get(id=new_owner_id)
+                property_to_transfer = LandProperty.objects.get(id=property_id)
 
-        return render(request, 'properties/initiate_transfer.html', context)
+                # Create OwnershipTransfer record
+                OwnershipTransfer.objects.create(
+                    land_property=property_to_transfer,
+                    current_owner=request.user,
+                    new_owner=new_owner,
+                    status=1,  # Pending
+                    added_by=request.user
+                )
+                messages.success(request, "Transfer initiated successfully.")
+                return redirect('transfers')
+
+            except User.DoesNotExist:
+                messages.error(request, "Selected user does not exist.")
+            except LandProperty.DoesNotExist:
+                messages.error(request, "Selected property does not exist.")
+            except Exception as e:
+                messages.error(request, f"An error occurred: {e}")
+
+    # Render the template with context
+    return render(request, 'properties/initiate_transfer.html', {
+        'users': users,
+        'properties': properties,
+    })

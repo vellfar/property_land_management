@@ -2,70 +2,57 @@
 {% extends "templates/index.html" %}
 
 {% block content %}
-    <div class="container">
-        <!-- Row 1: Card 1 - New Owner -->
-        <div class="row justify-content-end">
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h5>New Owner</h5>
-                    </div>
-                    <div class="card-body">
-                        <form method="get" action="{% url 'initiate_transfer' %}">
-                            <input type="text" name="search_user" class="form-control" placeholder="Search for user (username, first name, last name, email)" />
-                            <button type="submit" class="btn btn-primary mt-2">Search</button>
-                        </form>
+<div class="container">
+    <div class="row justify-content-end">
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Initiate Property Transfer</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'initiate_transfer' %}">
+                        {% csrf_token %}
 
+                        <!-- Search for new owner -->
+                        <h6>Step 1: Select New Owner</h6>
+                        <input type="text" name="search_user" class="form-control" placeholder="Search for user (username, first name, last name, email)" />
+                        <button type="submit" name="search_users" value="true" class="btn btn-primary mt-2">Search User</button>
+                        
                         <!-- Display search results for users -->
                         {% if users %}
-                            <form method="post" action="{% url 'initiate_transfer' %}">
-                                {% csrf_token %}
-                                <div class="mt-3">
-                                    {% for user in users %}
-                                        <div>
-                                            <input type="checkbox" name="new_owner" value="{{ user.id }}">
-                                            {{ user.first_name }} {{ user.last_name }}
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            </form>
+                            <div class="mt-3">
+                                {% for user in users %}
+                                    <div>
+                                        <input type="radio" name="new_owner" value="{{ user.id }}">
+                                        {{ user.first_name }} {{ user.last_name }}
+                                    </div>
+                                {% endfor %}
+                            </div>
                         {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Row 2: Card 2 - Property to Transfer -->
-        <div class="row justify-content-end">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5>Property to Transfer</h5>
-                    </div>
-                    <div class="card-body">
-                        <form method="get" action="{% url 'initiate_transfer' %}">
-                            <input type="text" name="search_property" class="form-control" placeholder="Search for property" />
-                            <button type="submit" class="btn btn-primary mt-2">Search</button>
-                        </form>
+                        <!-- Search for property -->
+                        <h6 class="mt-4">Step 2: Select Property</h6>
+                        <input type="text" name="search_property" class="form-control" placeholder="Search for property" />
+                        <button type="submit" name="search_properties" value="true" class="btn btn-primary mt-2">Search Property</button>
 
                         <!-- Display search results for properties -->
                         {% if properties %}
-                            <form method="post" action="{% url 'initiate_transfer' %}">
-                                {% csrf_token %}
-                                <div class="mt-3">
-                                    {% for property in properties %}
-                                        <div>
-                                            <input type="checkbox" name="property" value="{{ property.id }}">
-                                            {{ property.name }} ({{ property.location }})
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                                <button type="submit" class="btn btn-success mt-3">Initiate transfer</button> 
-                            </form>
+                            <div class="mt-3">
+                                {% for property in properties %}
+                                    <div>
+                                        <input type="radio" name="property" value="{{ property.id }}">
+                                        {{ property.name }} ({{ property.location }})
+                                    </div>
+                                {% endfor %}
+                            </div>
                         {% endif %}
-                    </div>
+
+                        <!-- Submit the transfer -->
+                        <button type="submit" class="btn btn-success mt-3">Initiate Transfer</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
