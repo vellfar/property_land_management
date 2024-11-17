@@ -1,5 +1,5 @@
 from django import forms
-from .models import LandProperty , Location
+from .models import LandProperty , Location, OwnershipTransfer
 
 class LandPropertyForm(forms.ModelForm):
     class Meta:
@@ -15,3 +15,8 @@ class PropertyForm(forms.ModelForm):
     class Meta:
         model = LandProperty
         fields = ['name', 'PID', 'size', 'valuation']
+
+class OwnershipTransferForm(forms.ModelForm):
+    class Meta:
+        model = OwnershipTransfer
+        fields = ['land_property', 'new_owner']

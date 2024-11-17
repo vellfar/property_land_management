@@ -4,6 +4,8 @@ from properties.models import OwnershipTransfer
 from .models import *
 from .forms import LandPropertyForm, PropertyForm, LocationForm
 from django.http import HttpResponseForbidden
+from django.db.models import Q
+from django.contrib import messages
 
 # Create your views here.
 def index(request):
@@ -103,3 +105,73 @@ def confirm_delete_property(request, property_id):
         return redirect('properties_index')  # Redirect to the properties overview page
     
     return render(request, 'properties/confirm_delete_property.html', {'property': property})
+
+
+
+
+def initiate_transfer(request):
+    if request.method == "POST":
+        print(request.POST)
+        # Get selected new owner and property
+        new_owner_id = request.POST.get('new_owner')  # ID of new owner selected
+        property_id = request.POST.get('property')  # ID of selected property
+
+        # Handle missing inputs
+        if not new_owner_id or not property_id:
+            messages.error(request, "Please select both a new owner and a property.")
+            return redirect('initiate_transfer')
+
+        try:
+            # Fetch selected user and property
+            new_owner = User.objects.get(id=new_owner_id)
+            property_to_transfer = LandProperty.objects.get(id=property_id)
+
+            # Create the OwnershipTransfer record
+            OwnershipTransfer.objects.create(
+                land_property=property_to_transfer,
+                current_owner=request.user,
+                new_owner=new_owner,
+                status=1,  # Pending status
+                added_by=request.user
+            )
+
+            # Provide success message
+            messages.success(request, "Transfer initiated successfully.")
+            return redirect('transfers')  # Redirect to transfers page
+        
+        except User.DoesNotExist:
+            messages.error(request, "Selected user does not exist.")
+        except LandProperty.DoesNotExist:
+            messages.error(request, "Selected property does not exist.")
+        except Exception as e:
+            messages.error(request, f"An error occurred: {str(e)}")
+        
+        # Redirect back to the form in case of an error
+        return redirect('initiate_transfer')
+
+    else:
+        # Handle search functionality for both user (new owner) and properties
+
+        # Search for new owner based on request input
+        if 'search_user' in request.GET:
+            query = request.GET.get('search_user')
+            users = User.objects.filter(
+                Q(username__icontains=query) | Q(first_name__icontains=query) | Q(last_name__icontains=query) | Q(email__icontains=query)
+            )
+        else:
+            users = User.objects.none()  # Empty query result if no search term
+
+        # Get properties where the logged-in user is the owner
+        if 'search_property' in request.GET:
+            property_query = request.GET.get('search_property')
+            properties = LandProperty.objects.filter(owner=request.user, name__icontains=property_query)
+        else:
+            properties = LandProperty.objects.filter(owner=request.user)
+
+        # Prepare context for the template
+        context = {
+            'users': users,
+            'properties': properties,
+        }
+
+        return render(request, 'properties/initiate_transfer.html', context)

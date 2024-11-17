@@ -9,4 +9,5 @@ urlpatterns = [
     path('properties/<int:property_id>/view/', views.view_property, name='view_property'),
     path('properties/<int:property_id>/delete/confirm/', views.confirm_delete_property, name='confirm_delete_property'),
     path('add_property/', views.add_property, name='add_property'),
+    path('initiate-transfer/', views.initiate_transfer, name='initiate_transfer'),
 ]
