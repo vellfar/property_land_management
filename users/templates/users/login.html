@@ -5,22 +5,160 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login</title>
-  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  
+  <style>
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+/* Body and HTML Styling */
+body, html {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f7f7f7;
+}
+
+/* Login Container */
+.login-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: row;
+}
+
+.image-section {
+  flex: 1;
+}
+
+.image-section img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Form Section */
+.form-section {
+  flex: 1;
+  padding: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #fff;
+}
+
+.form-section h2 {
+  font-size: 32px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.form-section p {
+  font-size: 16px;
+  margin-bottom: 30px;
+  color: #666;
+}
+
+.form-section label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+.form-section input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.form-section input:focus {
+  border-color: #00ff11;
+  outline: none;
+}
+
+.form-section button {
+  padding: 12px;
+  width: 100%;
+  background-color: #56c83a;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.form-section button:hover {
+  background-color: #058800;
+}
+
+.form-section a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.form-section a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+  }
+
+  .image-section {
+    display: none; /* Hide image section on small screens */
+  }
+
+  body {
+    background: url('{% static "images/login-image.jpg" %}') no-repeat center center fixed;
+    background-size: cover;
+  }
+
+  .form-section {
+    background-color: rgba(255, 255, 255, 0.9); /* Transparent form background */
+    padding: 40px;
+    margin: 20px;
+    border-radius: 10px;
+  }
+}
+
+
+  </style>
 </head>
 <body>
-  <div class="form-container">
-    <h2>Login</h2>
-    <form method="POST" action="{% url 'login' %}">
-      {% csrf_token %}
-      <label for="username">Username</label>
-      <input type="text" id="username" name="username" required>
-      
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password" required>
-      
-      <button type="submit">Login</button>
-    </form>
-    <p>Don’t have an account? <a href="{% url 'register' %}">Register here</a></p>
+  <div class="login-container">
+    <div class="image-section">
+      <img src="{% static 'images/login-image.jpg' %}" alt="Login Illustration">
+    </div>
+    <div class="form-section">
+      <h2>Welcome Back</h2>
+      <p>Sign in to your account to continue</p>
+      <form method="POST" action="{% url 'login' %}">
+        {% csrf_token %}
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required>
+        
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+        
+        <button type="submit">Login</button>
+      </form>
+      <p>Don’t have an account? <a href="{% url 'register' %}">Register here</a></p>
+    </div>
   </div>
 </body>
 </html>

@@ -99,7 +99,7 @@
         }
 
         .hero {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1973&q=80');
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('static/images/login-image.jpg');
             background-size: cover;
             background-position: center;
             height: 100vh;
@@ -206,6 +206,7 @@
 
             .nav-links a {
                 padding: 0.5rem 1rem;
+                color: #333;
             }
 
             .menu-toggle {
@@ -231,11 +232,12 @@
                 <a href="#features">Features</a>
                 <a href="#about">About</a>
                 <a href="#contact">Contact</a>
+                <div class="auth-links">
+                    <a href="{% url 'login' %}">Login</a>
+                    <a href="{% url 'register' %}">Register</a>
+                </div>
             </div>
-            <div class="auth-links">
-                <a href="{% url 'login' %}">Login</a>
-                <a href="{% url 'register' %}">Register</a>
-            </div>
+            
         </nav>
     </header>
 
