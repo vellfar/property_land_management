@@ -8,7 +8,9 @@ from io import BytesIO
 from matplotlib.ticker import MaxNLocator
 from properties.models import *
 import urllib, base64
+from django.contrib.auth import update_session_auth_hash
 import matplotlib.pyplot as plt
+from django.contrib import messages
 from django.http import HttpResponse
 
 # @login_required
@@ -142,19 +144,39 @@ def settings(request):
 def updateAccount(request):
     if request.method == 'POST':
         user = request.user
-        user.first_name = request.POST['first_name']
-        user.last_name = request.POST['last_name']
-        user.email = request.POST['email']
+        user.first_name = request.POST.get('first_name')
+        user.last_name = request.POST.get('last_name')
+        user.email = request.POST.get('email')
+        user.nin = request.POST.get('nin')  
         user.save()
-        return redirect('profile')
+        messages.success(request, 'Account information updated successfully!')
+        return redirect('settings')  
     else:
-        return HttpResponse('Invalid request method')
+        return render(request, 'users/update_account.html', {'user': request.user})  # Pass user explicitly
+    
+
 
 def updatePassword(request):
     if request.method == 'POST':
         user = request.user
-        user.set_password(request.POST['password'])
+        current_password = request.POST.get('current_password')
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if not user.check_password(current_password):
+            messages.error(request, 'Current password is incorrect.')
+            return redirect('settings')
+
+        if new_password != confirm_password:
+            messages.error(request, 'New passwords do not match.')
+            return redirect('settings')
+
+        user.set_password(new_password)
         user.save()
-        return redirect('profile')
-    else:
-        return HttpResponse('Invalid request method')
+
+        # Keep the user logged in after password change
+        update_session_auth_hash(request, user)
+
+        messages.success(request, 'Password updated successfully!')
+        return redirect('settings')
+    return HttpResponse('Invalid request method', status=405)
