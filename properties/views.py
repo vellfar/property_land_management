@@ -10,7 +10,7 @@ from django.contrib import messages
 # Create your views here.
 def index(request):
     # Get properties where the logged-in user is the owner
-    properties = LandProperty.objects.filter(owner=request.user)
+    properties = LandProperty.objects.filter(owner=request.user).exclude(status=0)
     
     # Prepare context to send to the template
     context = {
